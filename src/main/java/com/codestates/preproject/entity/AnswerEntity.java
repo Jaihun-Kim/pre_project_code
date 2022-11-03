@@ -1,10 +1,7 @@
 package com.codestates.preproject.entity;
 
 import com.codestates.preproject.util.BaseEntity;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -26,6 +23,7 @@ public class AnswerEntity extends BaseEntity {
     private UserEntity user;
 
     @Column
+    @Setter
     private String content;
 
     @Column

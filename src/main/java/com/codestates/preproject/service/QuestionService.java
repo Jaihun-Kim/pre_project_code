@@ -1,9 +1,12 @@
 package com.codestates.preproject.service;
 
+import com.codestates.preproject.dto.AnswerDTO;
 import com.codestates.preproject.dto.QuestionDTO;
+import com.codestates.preproject.entity.AnswerEntity;
 import com.codestates.preproject.entity.QuestionEntity;
 import com.codestates.preproject.entity.TagEntity;
 import com.codestates.preproject.entity.UserEntity;
+import com.codestates.preproject.repository.AnswerRepository;
 import com.codestates.preproject.repository.QuestionRepository;
 import com.codestates.preproject.repository.TagRepository;
 import com.codestates.preproject.repository.UserRepository;
@@ -11,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,13 +22,15 @@ import java.util.Optional;
 public class QuestionService {
     private QuestionRepository questionRepository;
     private UserRepository userRepository;
-
     private TagRepository tagRepository;
 
-    public QuestionService(QuestionRepository questionRepository, UserRepository userRepository, TagRepository tagRepository) {
+    private AnswerRepository answerRepository;
+
+    public QuestionService(QuestionRepository questionRepository, UserRepository userRepository, TagRepository tagRepository, AnswerRepository answerRepository) {
         this.questionRepository = questionRepository;
         this.userRepository = userRepository;
         this.tagRepository = tagRepository;
+        this.answerRepository = answerRepository;
     }
 
     public List<QuestionDTO.QuestionAll> lookup(){
@@ -62,9 +68,19 @@ public class QuestionService {
 
         return questionEntity.getQuestionI();
     }
-    public QuestionEntity questionById(Long questionI){
-        Optional<QuestionEntity> questionEntity = questionRepository.findById(questionI);
-        return questionEntity.get();
+    public QuestionDTO.QuestionOne questionById(Long questionI){
+        QuestionEntity questionEntity = questionRepository.findById(questionI).get();
+        List<AnswerEntity> answerEntityList = answerRepository.findByQuestionI(questionI);
+        List<AnswerDTO.AnswerGetOne> answerGetOneList=new LinkedList<>();
+        for(AnswerEntity a : answerEntityList){
+            AnswerDTO.AnswerGetOne answerGetOne = AnswerDTO.AnswerGetOne.builder().answerI(a.getAnswerI()).content(a.getContent())
+                    .created_at(a.getCreated_at()).updated_at(a.getUpdated_at())
+                    .totalLike(a.getTotalLike()).user(a.getUser()).build();
+            answerGetOneList.add(answerGetOne);
+        }
+        //이거 수정 필요
+        QuestionDTO.QuestionOne question = QuestionDTO.QuestionOne.builder().question(questionEntity).answers(answerGetOneList).build();
+        return question;
     }
 
     public Long modifyQuestion(Long questionI, QuestionDTO.Question question) {

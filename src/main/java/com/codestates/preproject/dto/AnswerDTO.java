@@ -1,6 +1,7 @@
 package com.codestates.preproject.dto;
 
 
+import com.codestates.preproject.entity.UserEntity;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -36,4 +37,21 @@ public class AnswerDTO {
 
         public AnswerGet(){}
     }
+
+    @Setter
+    @Getter
+    @AllArgsConstructor
+    @Builder
+    public static class AnswerGetOne{
+
+        private Long answerI;
+        private String content;
+        private LocalDateTime created_at;
+        private LocalDateTime updated_at;
+        private Integer totalLike;
+        private UserEntity user;
+
+        public AnswerGetOne(){}
+    }
+
 }

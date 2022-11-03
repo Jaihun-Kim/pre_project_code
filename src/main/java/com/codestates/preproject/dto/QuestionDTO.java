@@ -1,5 +1,7 @@
 package com.codestates.preproject.dto;
 
+import com.codestates.preproject.entity.AnswerEntity;
+import com.codestates.preproject.entity.QuestionEntity;
 import com.codestates.preproject.entity.UserEntity;
 import com.codestates.preproject.util.BaseEntity;
 import lombok.*;
@@ -49,6 +51,29 @@ public class QuestionDTO {
         private LocalDateTime created_at;
         private LocalDateTime updated_at;
         public QuestionAll(){}
+
+        /*
+        @Setter
+        @AllArgsConstructor
+        @Builder
+        public static class UserInfo{
+            private Long userI;
+            private String nickName;
+            private String email;
+        }*/
+    }
+
+    @Setter
+    @Getter
+    @AllArgsConstructor
+    @Builder
+    public static class QuestionOne {
+        //private UserEntity user;
+        //아이디를 저장하고 있을 수 있는지? 아이디를 보내줄 수 있는지?
+        //private UserInfo user;
+        private QuestionEntity question;
+        private List<AnswerDTO.AnswerGetOne> answers;
+        public QuestionOne(){}
 
         /*
         @Setter

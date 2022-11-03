@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AnswerService {
@@ -43,5 +44,20 @@ public class AnswerService {
         }
 
         return answerGetList;
+    }
+
+    public Boolean modifyAnswer(Long questionI, Long answerI,@RequestBody AnswerDTO.AnswerPost answerPatch) {
+        String email = answerPatch.getEmail();
+        if(!userRepository.existsByEmail(email))
+            return false;
+        AnswerEntity answerEntity = answerRepository.findById(answerI).get();
+        answerEntity.setContent(answerPatch.getContent());
+        answerRepository.save(answerEntity);
+        return true;
+    }
+
+    public Boolean deleteAnswer(Long questionI, Long answerI) {
+        answerRepository.deleteById(answerI);
+        return true;
     }
 }
