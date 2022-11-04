@@ -12,4 +12,11 @@ import java.util.List;
 public interface TagRepository extends JpaRepository<TagEntity,Long> {
     @Query(value="SELECT * FROM tag WHERE questionI=:question_I",nativeQuery = true)
     List<TagEntity> findByQuestionI(@Param("question_I")Long question_I);
+
+    /*
+    @Query(value="DELETE FROM tag WHERE questioni=:question_I",nativeQuery = true)
+    void deleteAllByQuestionI(@Param("question_I")Long question_I);
+
+    @Override
+    void deleteAllById(Iterable<? extends Long> longs);*/
 }

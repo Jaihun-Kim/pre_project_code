@@ -2,6 +2,7 @@ package com.codestates.preproject.dto;
 
 import com.codestates.preproject.entity.AnswerEntity;
 import com.codestates.preproject.entity.QuestionEntity;
+import com.codestates.preproject.entity.TagEntity;
 import com.codestates.preproject.entity.UserEntity;
 import com.codestates.preproject.util.BaseEntity;
 import lombok.*;
@@ -42,7 +43,6 @@ public class QuestionDTO {
         //아이디를 저장하고 있을 수 있는지? 아이디를 보내줄 수 있는지?
         private Long questionI;
         //private UserInfo user;
-        private UserEntity user;
         private String title;
         private String content;
         private Integer totalLike;
@@ -50,6 +50,8 @@ public class QuestionDTO {
         private Integer totalAnswers;
         private LocalDateTime created_at;
         private LocalDateTime updated_at;
+        private UserEntity user;
+        private List<String> tags;
         public QuestionAll(){}
 
         /*
@@ -72,6 +74,7 @@ public class QuestionDTO {
         //아이디를 저장하고 있을 수 있는지? 아이디를 보내줄 수 있는지?
         //private UserInfo user;
         private QuestionEntity question;
+        private List<String> tags;
         private List<AnswerDTO.AnswerGetOne> answers;
         public QuestionOne(){}
 

@@ -13,10 +13,7 @@ import com.codestates.preproject.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class QuestionService {
@@ -35,17 +32,22 @@ public class QuestionService {
 
     public List<QuestionDTO.QuestionAll> lookup(){
         List<QuestionEntity> entityList = questionRepository.findAll();
-        List<QuestionDTO.QuestionAll> list=new ArrayList<>();
+        List<QuestionDTO.QuestionAll> list=new LinkedList<>();
 
         for(QuestionEntity q: entityList){
+            List<TagEntity> tagEntities = tagRepository.findByQuestionI(q.getQuestionI());
+            List<String> tags=new LinkedList<>();
+            for(TagEntity t: tagEntities){
+                tags.add(t.getTag_name());
+            }
             QuestionDTO.QuestionAll questionDTO = QuestionDTO.QuestionAll.builder().questionI(q.getQuestionI())
                     //.user(QuestionDTO.QuestionAll.UserInfo.builder().userI(q.getUser().getUserI()).nickName(q.getUser().getNickName()).email(q.getUser().getEmail()).build())
-                    .user(q.getUser())
+                    .user(q.getUser()).tags(tags)
                     .created_at(q.getCreated_at()).updated_at(q.getUpdated_at())
                     .title(q.getTitle()).content(q.getContent()).totalLike(q.getTotalLike()).totalViewed(q.getTotalViewed()).totalAnswers(0).build();
             list.add(questionDTO);
         }
-
+        Collections.reverse(list);
         return list;
     }
 
@@ -79,7 +81,12 @@ public class QuestionService {
             answerGetOneList.add(answerGetOne);
         }
         //이거 수정 필요
-        QuestionDTO.QuestionOne question = QuestionDTO.QuestionOne.builder().question(questionEntity).answers(answerGetOneList).build();
+        List<TagEntity> tagEntities = tagRepository.findByQuestionI(questionI);
+        List<String> tags=new LinkedList<>();
+        for(TagEntity t: tagEntities) {
+            tags.add(t.getTag_name());
+        }
+        QuestionDTO.QuestionOne question = QuestionDTO.QuestionOne.builder().question(questionEntity).tags(tags).answers(answerGetOneList).build();
         return question;
     }
 
@@ -90,6 +97,16 @@ public class QuestionService {
         }
         if (question.getContent()!=null){
             old_questionEntity.setContent(question.getContent());
+        }
+        if (question.getTags()!=null){
+            List<TagEntity> tagEntities = tagRepository.findByQuestionI(questionI);
+            for(TagEntity t: tagEntities){
+                tagRepository.deleteById(t.getTagI());
+            }
+            for(String name: question.getTags()){
+                TagEntity tag= TagEntity.builder().question(old_questionEntity).tag_name(name).build();
+                tagRepository.save(tag);
+            }
         }
         questionRepository.save(old_questionEntity);
         return questionI;
